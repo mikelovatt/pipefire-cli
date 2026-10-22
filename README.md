@@ -1,5 +1,7 @@
 # pipefire
 
+<img src="assets/logo-400.png" width="72" alt="Pipefire">
+
 Free email deliverability checks from the terminal. Check a domain's SPF, DKIM, DMARC, MX, BIMI and MTA-STS records, look it up on spam blacklists, read raw email headers and score a cold email subject line.
 
 No account. No API key. No dependencies.
@@ -55,6 +57,15 @@ npm install -g pipefire
 ```
 
 Needs Node 18 or newer.
+
+## Use it in Claude, ChatGPT, Cursor, Cline or Gemini CLI
+
+The same sixteen tools run as a remote MCP server at `https://pipefire.ai/mcp`. No install and no API key.
+
+- **Cline / Cursor / any MCP client:** add a remote (streamable HTTP) server with the URL `https://pipefire.ai/mcp`. See [llms-install.md](llms-install.md).
+- **Gemini CLI:** `gemini extensions install https://github.com/mikelovatt/pipefire-cli`
+- **Claude Code:** `claude mcp add --transport http pipefire https://pipefire.ai/mcp`
+- **Claude and ChatGPT:** steps at [pipefire.ai/mcp-server](https://pipefire.ai/mcp-server?utm_source=github).
 
 ## How it works
 

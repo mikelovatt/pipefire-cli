@@ -1,0 +1,11 @@
+{
+  "name": "pipefire",
+  "version": "1.0.0",
+  "description": "Free email deliverability tools: check SPF, DKIM, DMARC, MX, BIMI, MTA-STS and blacklists, read email headers, score cold emails and subject lines, generate DNS records. No account or API key.",
+  "mcpServers": {
+    "pipefire": {
+      "httpUrl": "https://pipefire.ai/mcp"
+    }
+  },
+  "contextFileName": "GEMINI.md"
+}
