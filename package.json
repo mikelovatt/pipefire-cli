@@ -1,0 +1,39 @@
+{
+  "name": "pipefire",
+  "version": "1.0.0",
+  "description": "Free email deliverability checks from the terminal: SPF, DKIM, DMARC, MX, BIMI, MTA-STS, blacklists, email headers and cold email subject line scoring. No account or API key.",
+  "keywords": [
+    "email",
+    "deliverability",
+    "dmarc",
+    "spf",
+    "dkim",
+    "dns",
+    "blacklist",
+    "email-headers",
+    "cold-email",
+    "cli",
+    "mcp"
+  ],
+  "homepage": "https://pipefire.ai/tools?utm_source=npm",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikelovatt/pipefire-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mikelovatt/pipefire-cli/issues"
+  },
+  "author": "Pipefire <mike@pipefire.ai> (https://pipefire.ai)",
+  "license": "MIT",
+  "bin": {
+    "pipefire": "bin/pipefire.js"
+  },
+  "files": [
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}
