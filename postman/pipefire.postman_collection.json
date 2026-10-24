@@ -1,0 +1,767 @@
+{
+  "info": {
+    "_postman_id": "ccdd2f3d-b082-451f-8e0b-837b1f08659c",
+    "name": "Pipefire email deliverability tools",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Sixteen free, read-only email deliverability tools from Pipefire (https://pipefire.ai): SPF, DKIM, DMARC, MX, BIMI and MTA-STS checks, blacklist lookup, email header analysis, cold email and subject line scoring, and SPF, DMARC and DKIM record generators.\n\nNo account and no API key. Every request is a JSON-RPC call to the public MCP endpoint https://pipefire.ai/mcp, so the same tools also work in Claude, ChatGPT, Cursor and other MCP clients (https://pipefire.ai/mcp-server), and in a terminal with `npx pipefire`.\n\nRate limited per IP. Nothing you check is stored.\n\nPipefire is done-for-you cold email for agencies: https://pipefire.ai"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://pipefire.ai/mcp"
+    }
+  ],
+  "item": [
+    {
+      "name": "List all tools",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json, text/event-stream"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/list\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}",
+          "host": [
+            "{{baseUrl}}"
+          ]
+        },
+        "description": "Returns every tool with its input schema."
+      }
+    },
+    {
+      "name": "Domain checks",
+      "item": [
+        {
+          "name": "Email authentication check (MX, SPF, DKIM, DMARC)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"check_domain_email_setup\",\n    \"arguments\": {\n      \"domain\": \"example.com\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Check whether a domain is set up to send and receive email properly: MX, SPF, DKIM and DMARC in one go, each with pass/warn/fail, what was found, and how to fix it. Use when someone asks why their email goes to spam, whether their domain is set up right, or before sending cold email.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DMARC check",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"check_dmarc\",\n    \"arguments\": {\n      \"domain\": \"example.com\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Check a domain's DMARC record: whether one exists at _dmarc, its policy (none, quarantine, reject), whether reports are collected, and outdated tags. Tells you whether the domain can be impersonated by email.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "SPF check",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"check_spf\",\n    \"arguments\": {\n      \"domain\": \"example.com\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Check a domain's SPF record: whether it exists, is valid, stays under the 10 DNS lookup limit, and ends with a sensible all mechanism.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DKIM check",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"check_dkim\",\n    \"arguments\": {\n      \"domain\": \"example.com\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Look up a domain's DKIM public key, trying the selectors Google Workspace, Microsoft 365 and common senders use, plus one you name.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "MX lookup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"check_mx\",\n    \"arguments\": {\n      \"domain\": \"example.com\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "List a domain's mail servers (MX records) and which provider handles its email.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "BIMI check",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"check_bimi\",\n    \"arguments\": {\n      \"domain\": \"example.com\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Check a domain's BIMI record (logo in the inbox) and whether its DMARC policy is strict enough for BIMI to show.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "MTA-STS check",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"check_mta_sts\",\n    \"arguments\": {\n      \"domain\": \"example.com\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Check a domain's MTA-STS policy, which forces encrypted delivery of incoming mail.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Email blacklist check",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"check_blacklists\",\n    \"arguments\": {\n      \"target\": \"example.com\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Check whether a domain's sending IPs, or a single IPv4 address, are listed on the major email blacklists (Spamhaus, Barracuda, SpamCop and others), with removal links.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Email and copy",
+      "item": [
+        {
+          "name": "Email header analyzer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"analyze_email_headers\",\n    \"arguments\": {\n      \"headers\": \"Authentication-Results: mx.google.com; spf=pass smtp.mailfrom=example.com; dkim=pass header.d=example.com; dmarc=pass\\nFrom: hello@example.com\\nSubject: Quick question\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Read the raw headers of a received email: SPF, DKIM and DMARC results, alignment, the delivery path and delays. Use when someone pastes headers and asks why a message went to spam or failed authentication.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Cold email checker",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"check_cold_email\",\n    \"arguments\": {\n      \"subject\": \"quick question about your site\",\n      \"body\": \"Hi Sam,\\n\\nSaw your clinic has 41 Google reviews. The place two streets over has 380.\\n\\nWant me to send you the screenshot?\\n\\nMike\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Score a cold email (subject and body) out of 10 against the rules Pipefire checks its own emails with: length, reading level, the ask, subject line, and spam-filter wording. Returns each issue with why it matters and how to fix it.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Subject line tester",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"test_subject_line\",\n    \"arguments\": {\n      \"subject\": \"quick question about your site\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Score a cold email subject line out of 10: length, wording that hurts opens, and spam trigger words, with fixes.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Email permutator",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"guess_email_addresses\",\n    \"arguments\": {\n      \"first\": \"John\",\n      \"last\": \"Smith\",\n      \"domain\": \"example.com\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "List the likely email address formats for a person at a company domain (first@, first.last@, flast@ ...). Guesses only: verify before sending.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Sending domain generator",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"suggest_sending_domains\",\n    \"arguments\": {\n      \"brand\": \"acme\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Suggest lookalike sending domains for cold email (so the main domain is never put at risk), with live .com/.net availability. Give a business name or its website.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Record generators",
+      "item": [
+        {
+          "name": "SPF record generator",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"generate_spf_record\",\n    \"arguments\": {\n      \"providers\": [\n        \"google\"\n      ]\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Build a valid SPF TXT record for a domain from the email services it sends with, with warnings about the 10-lookup limit.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DMARC record generator",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"generate_dmarc_record\",\n    \"arguments\": {\n      \"domain\": \"example.com\",\n      \"policy\": \"quarantine\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Build a valid DMARC TXT record (to publish at _dmarc.yourdomain) from a policy and report addresses.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "DKIM record generator",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json, text/event-stream"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"generate_dkim_record\",\n    \"arguments\": {\n      \"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}",
+              "host": [
+                "{{baseUrl}}"
+              ]
+            },
+            "description": "Format a DKIM public key as the TXT record to publish at selector._domainkey.yourdomain.\n\nFree, no API key. Same tool as https://pipefire.ai/tools"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
