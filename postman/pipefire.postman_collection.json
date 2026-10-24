@@ -42,7 +42,19 @@
           ]
         },
         "description": "Returns every tool with its input schema."
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "Domain checks",
@@ -85,7 +97,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -129,7 +141,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -173,7 +185,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -217,7 +229,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -261,7 +273,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -305,7 +317,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -349,7 +361,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -393,7 +405,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -442,7 +454,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -486,7 +498,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -530,7 +542,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -574,7 +586,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -618,7 +630,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -667,7 +679,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -711,7 +723,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
@@ -733,7 +745,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"generate_dkim_record\",\n    \"arguments\": {\n      \"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA\"\n    }\n  }\n}",
+              "raw": "{\n  \"jsonrpc\": \"2.0\",\n  \"id\": 1,\n  \"method\": \"tools/call\",\n  \"params\": {\n    \"name\": \"generate_dkim_record\",\n    \"arguments\": {\n      \"selector\": \"google\",\n      \"publicKey\": \"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApsQlcbpOWBsXVxEv44fcjntlGgb5TfwDQhY5EKdzLB3L7BULSj/s9z/NQDHbgLomjVfCxEheCnsQ8+DmVwg5W8EZ/OpTvzkWdMkUQdBUuEbLjaFBcP4e8gSXywXCwGVNavrtrmfQsR0ePTCIZ1d7dyyKT/a4COG83qhFIIQ9w9Ag4YDI154sNxEMcPQxWL+Rnigrf/zjAHxL86bE2iMo8rgr3kwBm30hvl1gqvpWJdnaxwgGeUYHes+L6HqwPSADXwib6hTZXknRgeMApuSrz1pg9imKXe6tDiBqX7wAGmYbxF8wKxAarRkyBx6Dnzo1Y34967K920bbJ306ZJXztQIDAQAB\",\n      \"keyType\": \"rsa\"\n    }\n  }\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -755,7 +767,7 @@
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200 OK', () => pm.response.to.have.status(200));",
-                  "pm.test('has result', () => pm.expect(pm.response.json().result).to.be.an('object'));"
+                  "pm.test('no tool error', () => { const r = pm.response.json(); pm.expect(r.error).to.be.undefined; pm.expect(r.result && r.result.isError).to.not.equal(true); });"
                 ]
               }
             }
