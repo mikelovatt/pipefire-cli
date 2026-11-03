@@ -1,0 +1,25 @@
+{
+  "name": "pipefire",
+  "version": "1.0.0",
+  "description": "Free email deliverability checks for your AI agent: SPF, DKIM, DMARC, MX, BIMI and MTA-STS records, spam blacklists, email headers, cold email and subject line scores, and SPF, DMARC and DKIM record generators. No API key.",
+  "author": {
+    "name": "Pipefire",
+    "email": "mike@pipefire.ai"
+  },
+  "homepage": "https://pipefire.ai/mcp-server?utm_source=cursor-directory",
+  "repository": "https://github.com/mikelovatt/pipefire-cli",
+  "license": "MIT",
+  "keywords": [
+    "email-deliverability",
+    "dmarc",
+    "spf",
+    "dkim",
+    "cold-email",
+    "dns",
+    "blacklist",
+    "mcp"
+  ],
+  "logo": "assets/logo-400.png",
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
+}

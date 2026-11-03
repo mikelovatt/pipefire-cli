@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "pipefire": {
+      "url": "https://pipefire.ai/mcp"
+    }
+  }
+}
