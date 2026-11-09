@@ -1,0 +1,612 @@
+{
+  "author": "Pipefire",
+  "cloudEndpoint": "https://pipefire.ai/mcp",
+  "description": "Sixteen free email deliverability tools by Pipefire, cold email software for agencies: SPF, DKIM, DMARC, MX, BIMI and MTA-STS checks, spam blacklists, email headers, cold email and subject line scores, and SPF, DMARC and DKIM record generators. No account or API key.",
+  "homepage": "https://pipefire.ai/mcp-server?utm_source=lobehub",
+  "identifier": "pipefire",
+  "name": "Pipefire email deliverability tools",
+  "prompts": [
+    {
+      "name": "audit_domain",
+      "title": "Audit a domain for email deliverability",
+      "description": "Run every Pipefire check on a domain and get a prioritised fix list.",
+      "arguments": [
+        {
+          "name": "domain",
+          "description": "The domain to audit, e.g. example.com.",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "why_spam",
+      "title": "Why did this email go to spam?",
+      "description": "Paste the headers of a message that landed in spam and find the cause.",
+      "arguments": [
+        {
+          "name": "headers",
+          "description": "The raw headers of the message.",
+          "required": true
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "name": "guides",
+      "title": "Pipefire cold email and deliverability guides",
+      "uri": "pipefire://guides",
+      "description": "Every published Pipefire guide, with its URL and a one-line summary.",
+      "mimeType": "text/markdown"
+    }
+  ],
+  "tags": [
+    "email-deliverability",
+    "dmarc",
+    "spf",
+    "dkim",
+    "dns",
+    "blacklist",
+    "email-headers",
+    "cold-email",
+    "mcp"
+  ],
+  "tools": [
+    {
+      "name": "check_domain_email_setup",
+      "title": "Email authentication check (MX, SPF, DKIM, DMARC)",
+      "description": "Check whether a domain is set up to send and receive email properly: MX, SPF, DKIM and DMARC in one go, each with pass/warn/fail, what was found, and how to fix it. Use when someone asks why their email goes to spam, whether their domain is set up right, or before sending cold email.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "The domain to check, e.g. example.com."
+          },
+          "selector": {
+            "type": "string",
+            "description": "DKIM selector if known. Common ones are tried automatically."
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "check_dmarc",
+      "title": "DMARC check",
+      "description": "Check a domain's DMARC record: whether one exists at _dmarc, its policy (none, quarantine, reject), whether reports are collected, and outdated tags. Tells you whether the domain can be impersonated by email.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "The domain to check, e.g. example.com. A URL or email address also works."
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "check_spf",
+      "title": "SPF check",
+      "description": "Check a domain's SPF record: whether it exists, is valid, stays under the 10 DNS lookup limit, and ends with a sensible all mechanism.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "The domain to check, e.g. example.com. A URL or email address also works."
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "check_dkim",
+      "title": "DKIM check",
+      "description": "Look up a domain's DKIM public key, trying the selectors Google Workspace, Microsoft 365 and common senders use, plus one you name.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "The domain to check, e.g. example.com. A URL or email address also works."
+          },
+          "selector": {
+            "type": "string",
+            "description": "DKIM selector if known (e.g. google, selector1). Common ones are tried automatically."
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "check_mx",
+      "title": "MX lookup",
+      "description": "List a domain's mail servers (MX records) and which provider handles its email.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "The domain to check, e.g. example.com. A URL or email address also works."
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "check_bimi",
+      "title": "BIMI check",
+      "description": "Check a domain's BIMI record (logo in the inbox) and whether its DMARC policy is strict enough for BIMI to show.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "The domain to check, e.g. example.com. A URL or email address also works."
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "check_mta_sts",
+      "title": "MTA-STS check",
+      "description": "Check a domain's MTA-STS policy, which forces encrypted delivery of incoming mail.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string",
+            "description": "The domain to check, e.g. example.com. A URL or email address also works."
+          }
+        },
+        "required": [
+          "domain"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "check_blacklists",
+      "title": "Email blacklist check",
+      "description": "Check whether a domain's sending IPs, or a single IPv4 address, are listed on the major email blacklists (Spamhaus, Barracuda, SpamCop and others), with removal links.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "A domain (example.com) or a public IPv4 address."
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "analyze_email_headers",
+      "title": "Email header analyzer",
+      "description": "Read the raw headers of a received email: SPF, DKIM and DMARC results, alignment, the delivery path and delays. Use when someone pastes headers and asks why a message went to spam or failed authentication.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "headers": {
+            "type": "string",
+            "description": "The raw email headers (the part above the message body)."
+          }
+        },
+        "required": [
+          "headers"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "check_cold_email",
+      "title": "Cold email checker",
+      "description": "Score a cold email (subject and body) out of 10 against the rules Pipefire checks its own emails with: length, reading level, the ask, subject line, and spam-filter wording. Returns each issue with why it matters and how to fix it.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "first",
+              "follow-up",
+              "last"
+            ],
+            "description": "Which email in the sequence. Default first."
+          }
+        },
+        "required": [
+          "subject",
+          "body"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "test_subject_line",
+      "title": "Subject line tester",
+      "description": "Score a cold email subject line out of 10: length, wording that hurts opens, and spam trigger words, with fixes.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "subject"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "suggest_sending_domains",
+      "title": "Sending domain generator",
+      "description": "Suggest lookalike sending domains for cold email (so the main domain is never put at risk), with live .com/.net availability. Give a business name or its website.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "brand": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "Business name (Acme Roofing) or main domain (acmeroofing.com)."
+          }
+        },
+        "required": [
+          "brand"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "guess_email_addresses",
+      "title": "Email permutator",
+      "description": "List the likely email address formats for a person at a company domain (first@, first.last@, flast@ ...). Guesses only: verify before sending.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "first": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "last": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "middle": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "domain": {
+            "type": "string",
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "first",
+          "domain"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "generate_spf_record",
+      "title": "SPF record generator",
+      "description": "Build a valid SPF TXT record for a domain from the email services it sends with, with warnings about the 10-lookup limit.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "providers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "google",
+                "microsoft",
+                "zoho",
+                "zoho-eu"
+              ]
+            },
+            "description": "Mailbox providers: google (Google Workspace), microsoft (Microsoft 365), zoho (Zoho Mail), zoho-eu (Zoho Mail (EU data center))."
+          },
+          "includes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Other include: domains, e.g. sendgrid.net, mailgun.org."
+          },
+          "ip4": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ip6": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "a": {
+            "type": "boolean"
+          },
+          "mx": {
+            "type": "boolean"
+          },
+          "strict": {
+            "type": "boolean",
+            "description": "true = -all (hard fail), false = ~all (soft fail, the safer default)."
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "generate_dmarc_record",
+      "title": "DMARC record generator",
+      "description": "Build a valid DMARC TXT record (to publish at _dmarc.yourdomain) from a policy and report addresses.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string"
+          },
+          "policy": {
+            "type": "string",
+            "enum": [
+              "none",
+              "quarantine",
+              "reject"
+            ],
+            "description": "Start with none plus a report address, then tighten."
+          },
+          "rua": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Aggregate report addresses."
+          },
+          "subdomainPolicy": {
+            "type": "string",
+            "enum": [
+              "none",
+              "quarantine",
+              "reject"
+            ]
+          }
+        },
+        "required": [
+          "domain",
+          "policy"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    },
+    {
+      "name": "generate_dkim_record",
+      "title": "DKIM record generator",
+      "description": "Format a DKIM public key as the TXT record to publish at selector._domainkey.yourdomain.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "selector": {
+            "type": "string"
+          },
+          "publicKey": {
+            "type": "string",
+            "maxLength": 4000,
+            "description": "The public key, PEM or bare base64."
+          },
+          "keyType": {
+            "type": "string",
+            "enum": [
+              "rsa",
+              "ed25519"
+            ]
+          }
+        },
+        "required": [
+          "selector",
+          "publicKey"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "execution": {
+        "taskSupport": "forbidden"
+      }
+    }
+  ],
+  "version": "1.0.0"
+}
