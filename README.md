@@ -4,7 +4,7 @@
 
 Sixteen free email deliverability tools for your AI agent and your terminal. Check a domain's SPF, DKIM, DMARC, MX, BIMI and MTA-STS records, look it up on spam blacklists, read raw email headers, score a cold email and its subject line, and build SPF, DMARC and DKIM records.
 
-Built by [Pipefire](https://pipefire.ai?utm_source=github), cold email software for agencies. The SPF, DMARC and MX checks use the same code Pipefire uses to check its own sending domains, and the cold email checker scores against the same writing rules.
+Built by [Pipefire](https://pipefire.ai?utm_source=github), cold email software for agencies that sets up and runs outreach for you. The SPF, DMARC and MX checks use the same code Pipefire uses to check its own sending domains, and the cold email checker scores against the same writing rules.
 
 No account. No API key. Nothing you check is stored.
 
@@ -22,6 +22,8 @@ https://pipefire.ai/mcp
 - **Claude and ChatGPT:** step by step at [pipefire.ai/mcp-server](https://pipefire.ai/mcp-server?utm_source=github).
 
 Then ask in plain words, for example "Is example.com set up to send email?" or "Score this cold email before I send it".
+
+**Pipefire customers:** connect the same address in Claude, ChatGPT or Manus and sign in when asked. Your assistant can then read your campaigns, replies, mailboxes and results, draft a new campaign, rewrite a reply draft and pause or resume sending. It never sends an email or launches a campaign: those stay in the Pipefire console behind your click.
 
 ## Tools
 

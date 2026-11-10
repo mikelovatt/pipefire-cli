@@ -1,7 +1,7 @@
 {
   "author": "Pipefire",
   "cloudEndpoint": "https://pipefire.ai/mcp",
-  "description": "Sixteen free email deliverability tools by Pipefire, cold email software for agencies: SPF, DKIM, DMARC, MX, BIMI and MTA-STS checks, spam blacklists, email headers, cold email and subject line scores, and SPF, DMARC and DKIM record generators. No account or API key.",
+  "description": "Pipefire is cold email software for agencies that sets up and runs outreach for you. 16 free email deliverability tools (SPF, DKIM, DMARC, MX, BIMI, MTA-STS, blacklists, headers, cold email and subject line scores, DNS record generators). Customers sign in to run campaigns, replies and mailboxes from chat.",
   "homepage": "https://pipefire.ai/mcp-server?utm_source=lobehub",
   "identifier": "pipefire",
   "name": "Pipefire email deliverability tools",
@@ -608,5 +608,5 @@
       }
     }
   ],
-  "version": "1.0.0"
+  "version": "1.1.0"
 }
