@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "pipefire",
+  "version": "1.1.0",
+  "description": "Pipefire is cold email software for agencies that sets up and runs outreach for you. 16 free email deliverability tools (SPF, DKIM, DMARC, MX, blacklists, headers, cold email and subject line scores). Customers sign in to read campaigns, replies and mailboxes from chat.",
+  "author": {
+    "name": "Pipefire",
+    "url": "https://pipefire.ai"
+  },
+  "homepage": "https://pipefire.ai/mcp-server?utm_source=hermes-catalog",
+  "repository": "https://github.com/mikelovatt/pipefire-cli",
+  "license": "MIT",
+  "keywords": ["cold-email", "email-deliverability", "spf", "dkim", "dmarc", "blacklist", "mcp"],
+  "extensions": {
+    "com.nousresearch.hermes": {
+      "servers": {
+        "pipefire": { "trust": "untrusted" }
+      }
+    }
+  }
+}
