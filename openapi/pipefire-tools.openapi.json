@@ -1,0 +1,813 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Pipefire email deliverability tools",
+    "version": "1.0.0",
+    "description": "Pipefire (pipefire.ai) is cold email software for agencies that sets up and runs outreach for you. These are its free email deliverability endpoints: check a domain's MX, SPF, DKIM, DMARC, BIMI and MTA-STS records, look a domain up on spam blacklists, read email headers, and score a cold email or subject line. No API key. Each IP may make about 30 domain checks and 30 text checks an hour.",
+    "contact": {
+      "name": "Pipefire",
+      "url": "https://pipefire.ai/contact",
+      "email": "mike@pipefire.ai"
+    },
+    "termsOfService": "https://pipefire.ai/legal/terms",
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/mikelovatt/pipefire-cli/blob/main/LICENSE"
+    }
+  },
+  "externalDocs": {
+    "description": "Pipefire free email tools",
+    "url": "https://pipefire.ai/tools"
+  },
+  "servers": [
+    {
+      "url": "https://pipefire.ai/api/public/tools"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Domain checks",
+      "description": "DNS records and blacklists for a domain."
+    },
+    {
+      "name": "Email and copy",
+      "description": "Headers, cold email copy and subject lines."
+    },
+    {
+      "name": "Sending domains",
+      "description": "Lookalike domains to send cold email from."
+    }
+  ],
+  "paths": {
+    "/domain-check": {
+      "post": {
+        "operationId": "checkDomain",
+        "tags": [
+          "Domain checks"
+        ],
+        "summary": "Check a domain's email setup",
+        "description": "Checks MX, SPF, DKIM and DMARC in one call, each with pass, warn or fail, the record found and how to fix it. Pass `only` to check one record, including BIMI and MTA-STS.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "domain"
+                ],
+                "properties": {
+                  "domain": {
+                    "type": "string",
+                    "description": "The domain to check. A URL or email address also works.",
+                    "example": "example.com"
+                  },
+                  "selector": {
+                    "type": "string",
+                    "description": "DKIM selector, if known (e.g. google or selector1). Common ones are tried automatically."
+                  },
+                  "only": {
+                    "type": "string",
+                    "enum": [
+                      "mx",
+                      "spf",
+                      "dkim",
+                      "dmarc",
+                      "bimi",
+                      "mtasts"
+                    ],
+                    "description": "Check just this record. Leave out for MX, SPF, DKIM and DMARC together."
+                  }
+                }
+              },
+              "example": {
+                "domain": "pipefire.ai"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "domain": {
+                      "type": "string"
+                    },
+                    "checkedAt": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/RecordRow"
+                      }
+                    },
+                    "score": {
+                      "type": "number",
+                      "description": "Records passed (half a point per warning)."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input was not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many checks from this IP in one hour.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/blacklist-check": {
+      "post": {
+        "operationId": "checkBlacklists",
+        "tags": [
+          "Domain checks"
+        ],
+        "summary": "Check email blacklists",
+        "description": "Checks a domain's sending IPs, or one IPv4 address, against the major email blacklists (Spamhaus, Barracuda, SpamCop and others), with the removal page for each listing.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "target"
+                ],
+                "properties": {
+                  "target": {
+                    "type": "string",
+                    "description": "A domain (its mail server and SPF IPs are checked) or a public IPv4 address.",
+                    "example": "example.com"
+                  }
+                }
+              },
+              "example": {
+                "target": "pipefire.ai"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "input": {
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "ip",
+                        "domain"
+                      ]
+                    },
+                    "listed": {
+                      "type": "integer",
+                      "description": "List checks that came back listed."
+                    },
+                    "checked": {
+                      "type": "integer"
+                    },
+                    "unknown": {
+                      "type": "integer",
+                      "description": "Lists that did not answer."
+                    },
+                    "ips": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "ip": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string",
+                            "description": "Where the IP came from, e.g. MX or SPF."
+                          },
+                          "results": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "state": {
+                                  "type": "string",
+                                  "enum": [
+                                    "clean",
+                                    "listed",
+                                    "unknown"
+                                  ]
+                                },
+                                "removal": {
+                                  "type": "string",
+                                  "description": "Delisting page."
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "note": {
+                      "type": "string",
+                      "nullable": true,
+                      "description": "Context, such as why a hosted domain has no IPs of its own to check."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input was not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many checks from this IP in one hour.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/header-check": {
+      "post": {
+        "operationId": "analyzeHeaders",
+        "tags": [
+          "Email and copy"
+        ],
+        "summary": "Analyze email headers",
+        "description": "Reads the raw headers of a received email: SPF, DKIM and DMARC results, alignment, the delivery path and delays. Use it to find why a message went to spam.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "headers"
+                ],
+                "properties": {
+                  "headers": {
+                    "type": "string",
+                    "description": "The raw headers, from \"Show original\" in Gmail or \"View source\" in Outlook. Headers only, not the body."
+                  }
+                }
+              },
+              "example": {
+                "headers": "From: sam@example.com\nAuthentication-Results: mx.google.com; spf=pass smtp.mailfrom=example.com; dkim=pass header.d=example.com; dmarc=pass header.from=example.com\nReceived: from mail.example.com by mx.google.com; Tue, 10 Nov 2026 10:00:00 +0000"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "from": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "fromDomain": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "receiver": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "state": {
+                            "type": "string",
+                            "enum": [
+                              "pass",
+                              "warn",
+                              "fail"
+                            ]
+                          },
+                          "finding": {
+                            "type": "string"
+                          },
+                          "fix": {
+                            "type": "string"
+                          },
+                          "guide": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input was not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many checks from this IP in one hour.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/email-check": {
+      "post": {
+        "operationId": "checkColdEmail",
+        "tags": [
+          "Email and copy"
+        ],
+        "summary": "Score a cold email",
+        "description": "Scores a cold email out of 10 against the rules Pipefire writes its own emails with: length, reading level, the ask and the subject line. Returns each issue with why it matters and how to fix it.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "subject",
+                  "body"
+                ],
+                "properties": {
+                  "subject": {
+                    "type": "string",
+                    "description": "The subject line as it would be sent."
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": "The email body as plain text, with greeting and sign-off."
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "first",
+                      "follow-up",
+                      "last"
+                    ],
+                    "description": "Which email in the sequence. Leave out for first."
+                  }
+                }
+              },
+              "example": {
+                "subject": "quick question",
+                "body": "Hi Sam, I saw your booking page loads slowly on mobile. We fix that for dental clinics in a week. Worth a quick chat?\n\nMike"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "score": {
+                      "type": "number",
+                      "description": "Out of 10."
+                    },
+                    "verdict": {
+                      "type": "string"
+                    },
+                    "issues": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Issue"
+                      }
+                    },
+                    "stats": {
+                      "type": "object",
+                      "properties": {
+                        "words": {
+                          "type": "integer"
+                        },
+                        "subjectWords": {
+                          "type": "integer"
+                        },
+                        "grade": {
+                          "type": "number",
+                          "description": "US school grade needed to read it."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input was not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many checks from this IP in one hour.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/spam-check": {
+      "post": {
+        "operationId": "checkSpamWording",
+        "tags": [
+          "Email and copy"
+        ],
+        "summary": "Check spam-filter wording",
+        "description": "Scores a cold email for wording and formatting that spam filters and people react to, such as urgency phrases, money claims and link-heavy layouts.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "subject",
+                  "body"
+                ],
+                "properties": {
+                  "subject": {
+                    "type": "string",
+                    "description": "The subject line."
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": "The email body as plain text."
+                  }
+                }
+              },
+              "example": {
+                "subject": "quick question",
+                "body": "Hi Sam, act now for a free guarantee."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "score": {
+                      "type": "number",
+                      "description": "Out of 10, higher is safer."
+                    },
+                    "verdict": {
+                      "type": "string"
+                    },
+                    "spam": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Issue"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input was not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many checks from this IP in one hour.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/subject-check": {
+      "post": {
+        "operationId": "testSubjectLine",
+        "tags": [
+          "Email and copy"
+        ],
+        "summary": "Score a subject line",
+        "description": "Scores a cold email subject line out of 10: length, wording that gives the pitch away, and spam trigger words, with a fix for each.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "subject"
+                ],
+                "properties": {
+                  "subject": {
+                    "type": "string",
+                    "description": "The subject line exactly as it would be sent."
+                  }
+                }
+              },
+              "example": {
+                "subject": "quick question about your site"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "subject": {
+                      "type": "string"
+                    },
+                    "score": {
+                      "type": "number"
+                    },
+                    "verdict": {
+                      "type": "string"
+                    },
+                    "findings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Issue"
+                      }
+                    },
+                    "stats": {
+                      "type": "object",
+                      "properties": {
+                        "words": {
+                          "type": "integer"
+                        },
+                        "chars": {
+                          "type": "integer"
+                        },
+                        "maxWords": {
+                          "type": "integer"
+                        },
+                        "maxChars": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input was not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many checks from this IP in one hour.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sending-domains": {
+      "post": {
+        "operationId": "suggestSendingDomains",
+        "tags": [
+          "Sending domains"
+        ],
+        "summary": "Suggest sending domains",
+        "description": "Suggests lookalike domains to send cold email from, so the main domain is never put at risk, with live .com and .net availability.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "brand"
+                ],
+                "properties": {
+                  "brand": {
+                    "type": "string",
+                    "description": "The business name (Acme Roofing) or its main website (acmeroofing.com)."
+                  }
+                }
+              },
+              "example": {
+                "brand": "Acme Roofing"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Suggested names with availability."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The input was not valid.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many checks from this IP in one hour.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "What went wrong, in plain words."
+          }
+        }
+      },
+      "RecordRow": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "mx",
+              "spf",
+              "dkim",
+              "dmarc",
+              "bimi",
+              "mtasts"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "description": "The record, in plain words."
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "pass",
+              "warn",
+              "fail"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "nullable": true,
+            "description": "The record as published, or null if there is none."
+          },
+          "finding": {
+            "type": "string",
+            "description": "What was found, in one sentence."
+          },
+          "fix": {
+            "type": "string",
+            "description": "What to change. Empty when nothing needs doing."
+          },
+          "guide": {
+            "type": "string",
+            "description": "Slug of the Pipefire guide for this record."
+          }
+        }
+      },
+      "Issue": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "why": {
+            "type": "string"
+          },
+          "fix": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "security": []
+}
